@@ -1,32 +1,49 @@
 import http from "node:http";
-import { pipeline } from "node:stream";
 import { promisify } from "node:util";
-import { createReadStream, createWriteStream, writeFileSync } from "node:fs";
+import { createWriteStream } from "node:fs";
+import { pipeline, Transform, Writable } from "node:stream";
+
+import { csvStringToJson } from "convert-csv-to-json";
 
 const pipelineAsync = promisify(pipeline);
 
+const convertBufferToLegibleData = (chunk) => {
+  const dataChunks = [];
+  dataChunks.push(chunk);
+
+  const unifiedBuffer = Buffer.concat(dataChunks);
+  const legibleData = unifiedBuffer.toString("utf8");
+
+  return legibleData;
+};
+
 const server = http.createServer(async (request, response) => {
-  //   createReadStream(request).pipe(process.stdout);
+  const transformData = Transform({
+    transform(chunk, encoding, callback) {
+      const legibleData = convertBufferToLegibleData(chunk);
 
-  request.on("data", (chunk) => {});
+      const jsonData = csvStringToJson(legibleData);
+      const jsonBuffer = Buffer.from(JSON.stringify(jsonData));
 
-  //   await pipelineAsync(
-  //     readableStream,
-  //     process.stdout
-  //     // createWriteStream("import.csv")
-  //   );
+      callback(null, jsonBuffer);
+    },
+  });
 
-  response.end("Finish processing!");
+  //   const writableStream = Writable({
+  //     write(chunk, encoding, callback) {
+  //       console.log("Cadastrou no banco");
+
+  //       callback(null)
+  //     },
+  //   });
+
+  await pipelineAsync(
+    request, // ReadableStream
+    transformData,
+    createWriteStream("import.json")
+  );
+
+  response.writeHead(200).end("CSV import successfully!");
 });
 
 server.listen(3000);
-
-// let csv = "nome,idade,cpf,renda mensal\n";
-
-// for (let i = 0; i < 1e5; i++) {
-//   csv += `Ryan-${i},${Math.random() * 100},${Math.random() * 99999999999},R$${
-//     Math.random() * 12000
-//   }\n`;
-// }
-
-// writeFileSync("big_file.csv", csv);

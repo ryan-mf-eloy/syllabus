@@ -10,5 +10,8 @@
   },
   "keywords": [],
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "convert-csv-to-json": "^2.0.0"
+  }
 }
