@@ -1,11 +1,20 @@
-export default class UserController {
+class UserController {
   get(request, response) {
     return response.end(
       JSON.stringify([
         {
-          users: [],
+          users: [
+            {
+              name: "John",
+            },
+            {
+              name: "Bob",
+            },
+          ],
         },
       ])
     );
   }
 }
+
+export default new UserController();

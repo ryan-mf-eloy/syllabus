@@ -2,7 +2,9 @@ import { pipeline } from "node:stream";
 import { promisify } from "node:util";
 
 export default class PipelineAsync {
-  pipelineAsync() {
-    return promisify(pipeline);
+  pipe(readableStream, transformStream, writableStream) {
+    const pipelineASync = promisify(pipeline);
+
+    return pipelineASync(readableStream, transformStream, writableStream);
   }
 }

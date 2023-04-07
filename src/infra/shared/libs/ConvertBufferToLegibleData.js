@@ -1,5 +1,5 @@
 export default class ConvertBufferToLegibleData {
-  convertBufferToLegibleData(chunk) {
+  handle(chunk) {
     const dataChunks = [];
     dataChunks.push(chunk);
 
