@@ -1,5 +1,5 @@
-import TaskController from "../controllers/TaskController.js";
-import UserController from "../controllers/UserController.js";
+import TaskController from "./controllers/TaskController.js";
+import UserController from "./controllers/UserController.js";
 
 export default class Router {
   redirectHandler(request, response) {

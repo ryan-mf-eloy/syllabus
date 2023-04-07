@@ -1,4 +1,5 @@
 criar & implementar repositories
 criar & implementar orm
+criar & implementar entidades
 criar & implementar services
 criar & implementar sistema de importação
