@@ -7,20 +7,29 @@ import ConvertBufferToLegibleData from "../../infra/shared/libs/ConvertBufferToL
 import WritableStream from "../../services/ImportTasksFromCSVFile/streams/WritableStream.js";
 import TransformStream from "../../services/ImportTasksFromCSVFile/streams/TransformStream.js";
 class TaskController {
+  constructor(
+    importTaskFromCSVFileService,
+    pipelineAsync,
+    transformStream,
+    writableStream
+  ) {
+    this.importTaskFromCSVFileService = importTaskFromCSVFileService;
+    this.pipelineAsync = pipelineAsync;
+    this.transformStream = transformStream;
+    this.writableStream = writableStream;
+  }
+
   get(request, response) {
     return response.end();
   }
 
   async import(request, response) {
     try {
-      await new ImportTaskFromCSVFileService(
-        new PipelineASync(),
+      await this.importTaskFromCSVFileService(
         request,
-        new TransformStream(
-          new ConvertBufferToLegibleData(),
-          new FileConvert()
-        ),
-        new WritableStream()
+        this.pipelineAsync(),
+        this.transformStream(),
+        this.writableStream()
       ).handle();
 
       response.writeHead(200).end("Tasks imported successfully!");
@@ -30,7 +39,11 @@ class TaskController {
     }
   }
 
-  create(request, response) {
+  complete(request, response) {
+    return response.writeHead(200).end("Delete tasks successfully");
+  }
+
+  async create(request, response) {
     return response.writeHead(200).end("Create tasks successfully");
   }
 
@@ -43,4 +56,9 @@ class TaskController {
   }
 }
 
-export default new TaskController();
+export default new TaskController(
+  new ImportTaskFromCSVFileService(),
+  new PipelineASync(),
+  new TransformStream(new ConvertBufferToLegibleData(), new FileConvert()),
+  new WritableStream()
+);

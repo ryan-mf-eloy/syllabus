@@ -76,6 +76,16 @@ class Router {
     );
   }
 
+  patch(resource, handler) {
+    this.#routes.set(
+      JSON.stringify({
+        resource: this.#routeParamsInterpreter(resource),
+        method: "PATCH",
+      }),
+      { handler }
+    );
+  }
+
   delete(resource, handler) {
     this.#routes.set(
       JSON.stringify({

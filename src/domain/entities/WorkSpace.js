@@ -1,5 +1,6 @@
 export default class WorkSpace {
   #id = undefined;
+  #userId = undefined;
   #title = "Untitled";
   #description = "Workspace description";
   #tasks = [];
@@ -8,6 +9,9 @@ export default class WorkSpace {
 
   #isValid() {
     if (typeof this.#id !== "string") throw new Error("Invalid workspace id");
+
+    if (typeof this.#userId !== "string")
+      throw new Error("Invalid workspace userId");
 
     if (typeof this.#title !== "string")
       throw new Error("Invalid workspace title");
@@ -20,6 +24,8 @@ export default class WorkSpace {
 
   get() {
     const task = {
+      id: this.#id,
+      userId: this.#userId,
       title: this.#title,
       description: this.#description,
       tasks: this.#tasks,
@@ -28,8 +34,9 @@ export default class WorkSpace {
     return task;
   }
 
-  set({ id, title, description, tasks }) {
+  set({ id, userId, title, description, tasks }) {
     this.#id = id;
+    this.#userId = userId;
     this.#title = title;
     this.#description = description;
     this.#tasks = tasks;

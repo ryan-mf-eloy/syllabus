@@ -9,6 +9,7 @@ const routesFactory = (router) => {
   router.get("/task", TaskController.get);
   router.post("/task", TaskController.create);
   router.post("/task/import", TaskController.import);
+  router.patch("/task/:id/complete", TaskController.complete);
   router.put("/task/:id", TaskController.update);
   router.delete("/task/:id", TaskController.delete);
 
