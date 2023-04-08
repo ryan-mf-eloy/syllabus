@@ -8,17 +8,7 @@ import WritableStream from "../../services/ImportTasksFromCSVFile/streams/Writab
 import TransformStream from "../../services/ImportTasksFromCSVFile/streams/TransformStream.js";
 class TaskController {
   get(request, response) {
-    return response.end(
-      JSON.stringify([
-        {
-          tasks: [
-            {
-              title: "Task 1",
-            },
-          ],
-        },
-      ])
-    );
+    return response.end();
   }
 
   async import(request, response) {

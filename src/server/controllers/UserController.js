@@ -1,19 +1,6 @@
 class UserController {
   get(request, response) {
-    return response.end(
-      JSON.stringify([
-        {
-          users: [
-            {
-              name: "John",
-            },
-            {
-              name: "Bob",
-            },
-          ],
-        },
-      ])
-    );
+    return response.end();
   }
 
   create(request, response) {
