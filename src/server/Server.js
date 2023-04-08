@@ -6,9 +6,10 @@ import routesFactory from "./routes/routesFactory.js";
 import Middleware from "./http/Middleware.js";
 
 class Server {
-  constructor(middleware, router) {
+  constructor(middleware, router, routesFactory) {
     this.middleware = middleware;
     this.router = router;
+    this.routesFactory = routesFactory;
 
     this.#init(this.#build());
   }
@@ -24,11 +25,13 @@ class Server {
 
       // Router
       this.router.setHttpInfo(request, response);
-      routesFactory(this.router);
+      this.router.redirect();
     });
+
+    this.routesFactory(this.router);
 
     return server;
   }
 }
 
-new Server(new Middleware(), new Router());
+new Server(new Middleware(), Router, routesFactory);

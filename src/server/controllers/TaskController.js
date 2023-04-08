@@ -39,6 +39,18 @@ class TaskController {
       response.writeHead(500).end("Error at import your tasks!");
     }
   }
+
+  create(request, response) {
+    return response.writeHead(200).end("Create tasks successfully");
+  }
+
+  update(request, response) {
+    return response.writeHead(200).end("Update tasks successfully");
+  }
+
+  delete(request, response) {
+    return response.writeHead(200).end("Delete tasks successfully");
+  }
 }
 
 export default new TaskController();
