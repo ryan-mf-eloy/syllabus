@@ -1,11 +1,11 @@
-import ImportTaskFromCSVFileService from "../../services/ImportTasksFromCSVFileService.js";
+import ImportTaskFromCSVFileService from "../../services/ImportTasksFromCSVFile/ImportTasksFromCSVFileService.js";
 
 import FileConvert from "../../infra/shared/libs/FileConvert.js";
 import PipelineASync from "../../infra/shared/libs/PipelineAsync.js";
 import ConvertBufferToLegibleData from "../../infra/shared/libs/ConvertBufferToLegibleData.js";
 
-import WritableStream from "../../streams/WritableStream.js";
-import TransformStream from "../../streams/TransformStream.js";
+import WritableStream from "../../services/ImportTasksFromCSVFile/streams/WritableStream.js";
+import TransformStream from "../../services/ImportTasksFromCSVFile/streams/TransformStream.js";
 class TaskController {
   get(request, response) {
     return response.end(
@@ -15,16 +15,13 @@ class TaskController {
             {
               title: "Task 1",
             },
-            {
-              title: "Task 2",
-            },
           ],
         },
       ])
     );
   }
 
-  async create(request, response) {
+  async import(request, response) {
     try {
       await new ImportTaskFromCSVFileService(
         new PipelineASync(),

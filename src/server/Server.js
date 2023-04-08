@@ -1,7 +1,9 @@
 import http from "node:http";
 
-import Router from "./Router.js";
-import Middleware from "./Middleware.js";
+import Router from "./routes/Router.js";
+import routesFactory from "./routes/routesFactory.js";
+
+import Middleware from "./http/Middleware.js";
 
 class Server {
   constructor(middleware, router) {
@@ -21,11 +23,8 @@ class Server {
       this.middleware.setHeaders(response);
 
       // Router
-      this.router.redirectHandler(
-        request,
-        response,
-        this.middleware.routeParamsInterpreter
-      );
+      this.router.setHttpInfo(request, response);
+      routesFactory(this.router);
     });
 
     return server;
