@@ -4,7 +4,7 @@ export default class DeleteWorkSpaceRepository {
   }
 
   handle(workSpaceId) {
-    const workSpaces = this.orm.get("workspace", workSpaceId);
+    const workSpaces = this.orm.delete("workspace", workSpaceId);
 
     return workSpaces;
   }

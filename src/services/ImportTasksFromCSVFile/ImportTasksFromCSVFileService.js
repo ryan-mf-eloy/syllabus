@@ -1,14 +1,13 @@
 export default class ImportTasksFromCSVFileService {
-  constructor(pipelineAsync, readableStream, transformStream, writableStream) {
+  constructor(pipelineAsync, transformStream, writableStream) {
     this.pipelineAsync = pipelineAsync;
-    this.readableStream = readableStream;
-    this.transformStream = transformStream;
     this.writableStream = writableStream;
+    this.transformStream = transformStream;
   }
 
-  async handle() {
+  async handle(readableStream) {
     await this.pipelineAsync.pipe(
-      this.readableStream,
+      readableStream,
       this.transformStream.handle(),
       this.writableStream.handle()
     );

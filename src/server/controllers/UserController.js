@@ -1,3 +1,7 @@
+import DeleteUserRepository from "../../infra/database/repositories/user/DeleteUserRepository.js";
+
+import ORM from "../../infra/database/orm.js";
+
 class UserController {
   get(request, response) {
     return response.end();

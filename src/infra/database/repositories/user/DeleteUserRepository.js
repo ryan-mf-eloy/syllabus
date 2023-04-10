@@ -4,7 +4,7 @@ export default class DeleteUserRepository {
   }
 
   handle(userId) {
-    const users = this.orm.get("user", userId);
+    const users = this.orm.delete("user", userId);
 
     return users;
   }

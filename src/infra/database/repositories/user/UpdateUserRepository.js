@@ -4,7 +4,7 @@ export default class UpdateUserRepository {
   }
 
   handle(userData) {
-    const users = this.orm.get("user", userData.id, userData);
+    const users = this.orm.update("user", userData.id, userData);
 
     return users;
   }

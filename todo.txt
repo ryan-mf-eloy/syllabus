@@ -1,2 +1,0 @@
-criar & implementar services
-criar & implementar sistema de importação

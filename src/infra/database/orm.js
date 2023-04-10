@@ -69,13 +69,51 @@ class ORM {
     return data;
   }
 
+  #turnTableDataNameLoweCase(data) {
+    const values = Object.values(data);
+    const newObjectWithLowerCaseProps = Object.keys(data).reduce(
+      (acc, value, index) => ({
+        ...acc,
+        [value.toLowerCase()]: values[index],
+      }),
+      {}
+    );
+
+    return newObjectWithLowerCaseProps;
+  }
+
+  #filterCascadeTablesFromMainTable(data, table, resourceID) {
+    const dataWithPropsInLowerCase = this.#turnTableDataNameLoweCase(data);
+    return (
+      dataWithPropsInLowerCase[`${table}Id`.toLowerCase()] !==
+      resourceID.toLowerCase()
+    );
+  }
+
+  #deleteAllDataLinkedWithMainTable(tableDBArray, table, resourceID) {
+    const tableData = this.#database[tableDBArray[0]];
+    const tableName = tableDBArray[0];
+
+    const cascadeData = tableData.filter((data) =>
+      this.#filterCascadeTablesFromMainTable(data, table, resourceID)
+    );
+
+    if (tableName !== table) this.#database[tableName] = [...cascadeData];
+  }
+
   delete(table, resourceID) {
     if (Array.isArray(this.#database[table])) {
-      const tableWithoutDeletedData = this.#database[table].filter(
+      const databaseEntries = Object.entries(this.#database);
+
+      databaseEntries.map((tableDBArray) =>
+        this.#deleteAllDataLinkedWithMainTable(tableDBArray, table, resourceID)
+      );
+
+      const mainTableWithoutDeletedData = this.#database[table].filter(
         (data) => data.id !== resourceID
       );
 
-      this.#database[table] = [...tableWithoutDeletedData];
+      this.#database[table] = [...mainTableWithoutDeletedData];
     } else {
       this.#database[table] = [];
     }

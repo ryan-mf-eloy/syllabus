@@ -4,7 +4,7 @@ export default class UpdateTaskRepository {
   }
 
   handle(taskData) {
-    const tasks = this.orm.get("task", taskData.id, taskData);
+    const tasks = this.orm.update("task", taskData.id, taskData);
 
     return tasks;
   }

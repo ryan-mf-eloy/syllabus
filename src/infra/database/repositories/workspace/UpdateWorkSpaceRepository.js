@@ -4,8 +4,8 @@ export default class UpdateWorkSpaceRepository {
   }
 
   handle(workSpaceData) {
-    const workSpaces = this.orm.get(
-      "workSpace",
+    const workSpaces = this.orm.update(
+      "workspace",
       workSpaceData.id,
       workSpaceData
     );
