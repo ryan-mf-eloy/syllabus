@@ -4,8 +4,6 @@ export default class DeleteTaskRepository {
   }
 
   handle(taskId) {
-    const tasks = this.orm.delete("task", taskId);
-
-    return tasks;
+    return this.orm.delete("task", taskId);
   }
 }

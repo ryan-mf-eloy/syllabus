@@ -3,13 +3,13 @@ export default class UpdateWorkSpaceRepository {
     this.orm = orm;
   }
 
-  handle(workSpaceData) {
-    const workSpaces = this.orm.update(
+  handle(workSpaceId, workSpaceData) {
+    const updatedWorkSpace = this.orm.update(
       "workspace",
-      workSpaceData.id,
+      workSpaceId,
       workSpaceData
     );
 
-    return workSpaces;
+    return updatedWorkSpace;
   }
 }

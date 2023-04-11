@@ -3,9 +3,9 @@ export default class UpdateTaskRepository {
     this.orm = orm;
   }
 
-  handle(taskData) {
-    const tasks = this.orm.update("task", taskData.id, taskData);
+  handle(taskId, taskData) {
+    const updatedTask = this.orm.update("task", taskId, taskData);
 
-    return tasks;
+    return updatedTask;
   }
 }

@@ -1,6 +1,7 @@
 import ConvertBufferToLegibleData from "../../infra/shared/libs/ConvertBufferToLegibleData.js";
 import PipelineASync from "../../infra/shared/libs/PipelineAsync.js";
 import FileConvert from "../../infra/shared/libs/FileConvert.js";
+import UUID from "../../infra/shared/libs/UUID.js";
 
 import WritableStream from "../../services/ImportTasksFromCSVFile/streams/WritableStream.js";
 import TransformStream from "../../services/ImportTasksFromCSVFile/streams/TransformStream.js";
@@ -17,6 +18,10 @@ import CreateTaskRepository from "../../infra/database/repositories/task/CreateT
 import GetTaskRepository from "../../infra/database/repositories/task/GetTaskRepository.js";
 import DeleteTaskRepository from "../../infra/database/repositories/task/DeleteTaskRepository.js";
 import UpdateTaskRepository from "../../infra/database/repositories/task/UpdateTaskRepository.js";
+
+import Task from "../../domain/entities/Task.js";
+
+import { createWriteStream } from "node:fs";
 
 class TaskController {
   constructor(
@@ -46,11 +51,22 @@ class TaskController {
 
   async import(request, response) {
     try {
-      await this.importTaskFromCSVFileService.handle(request);
+      const fileStream = request.files.tasks.filepath;
+      console.log(new URL(`${import.meta.url}/${fileStream.name}`));
+      // const filePath = "../" + import.meta.url + ;
+
+      const writeStream = createWriteStream(filePath);
+
+      // await this.importTaskFromCSVFileService.handle(
+      //   request.files.tasks._writeStream
+      // );
 
       response.writeHead(200).end("Tasks imported successfully!");
     } catch (error) {
-      response.writeHead(500).end("Error at import your tasks!");
+      console.log(error);
+      response
+        .writeHead(500)
+        .end("Error at import your tasks. Verify your .csv file");
     }
   }
 
@@ -62,31 +78,39 @@ class TaskController {
     return response.writeHead(200).end(
       JSON.stringify({
         task: updatedTask,
-        message: "Delete tasks successfully",
+        message: "Completed tasks successfully",
       })
     );
   }
 
-  async create(request, response) {
-    console.log(request);
-    // const createdTask = this.createTaskService.handle(request.body);
-
-    // console.log(request.body);
+  async create({ body }, response) {
+    const createdTask = this.createTaskService.handle(body);
 
     return response.writeHead(200).end(
       JSON.stringify({
-        // task: { ...createdTask },
-        message: "Create tasks successfully",
+        task: createdTask,
+        message: "Created tasks successfully",
       })
     );
   }
 
-  update(request, response) {
-    return response.writeHead(200).end("Update tasks successfully");
+  update({ body, params }, response) {
+    const updatedTask = this.updateTaskService.handle(params.id, body);
+
+    return response.writeHead(200).end(
+      JSON.stringify({
+        task: updatedTask,
+        message: "Updated tasks successfully",
+      })
+    );
   }
 
-  delete(request, response) {
-    return response.writeHead(200).end("Delete tasks successfully");
+  delete({ params }, response) {
+    this.deleteTaskService.handle(params.id);
+
+    return response
+      .writeHead(200)
+      .end(JSON.stringify({ message: "Deleted tasks successfully" }));
   }
 }
 
@@ -96,10 +120,14 @@ export default new TaskController(
     new TransformStream(new ConvertBufferToLegibleData(), new FileConvert()),
     new WritableStream(
       new ConvertBufferToLegibleData(),
-      new CreateTaskService(new CreateTaskRepository(ORM))
+      new CreateTaskService(
+        new UUID(),
+        new CreateTaskRepository(ORM),
+        new Task()
+      )
     )
   ),
-  new CreateTaskService(new CreateTaskRepository(ORM)),
+  new CreateTaskService(new UUID(), new CreateTaskRepository(ORM), new Task()),
   new UpdateTaskService(new UpdateTaskRepository(ORM)),
   new DeleteTaskService(new DeleteTaskRepository(ORM)),
   new GetTaskService(new GetTaskRepository(ORM))

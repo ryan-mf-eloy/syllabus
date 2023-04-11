@@ -3,7 +3,6 @@ export default class WorkSpace {
   #userId = undefined;
   #title = "Untitled";
   #description = "Workspace description";
-  #tasks = [];
 
   constructor() {}
 
@@ -18,8 +17,6 @@ export default class WorkSpace {
 
     if (typeof this.#description !== "string")
       throw new Error("Invalid workspace description");
-
-    if (!Array.isArray(this.#tasks)) throw new Error("Invalid workspace tasks");
   }
 
   get() {
@@ -28,18 +25,16 @@ export default class WorkSpace {
       userId: this.#userId,
       title: this.#title,
       description: this.#description,
-      tasks: this.#tasks,
     };
 
     return task;
   }
 
-  set({ id, userId, title, description, tasks }) {
+  set({ id, userId, title, description }) {
     this.#id = id;
     this.#userId = userId;
     this.#title = title;
     this.#description = description;
-    this.#tasks = tasks;
 
     this.#isValid();
   }

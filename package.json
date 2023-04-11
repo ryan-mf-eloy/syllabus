@@ -12,6 +12,7 @@
   "author": "Ryan Eloy",
   "license": "ISC",
   "dependencies": {
-    "convert-csv-to-json": "^2.0.0"
+    "convert-csv-to-json": "^2.0.0",
+    "formidable": "^2.1.1"
   }
 }

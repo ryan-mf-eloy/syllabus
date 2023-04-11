@@ -14,9 +14,9 @@ export default class User {
     if (typeof this.#email !== "string") throw new Error("Invalid user email");
 
     const isNotExpectedPasswordValue = typeof this.#password !== "string";
-    const isEmptyPassword = String(this.#passwords).trim();
+    const isEmptyPassword = !String(this.#password).trim();
     const passwordHasLessThanEightCharacters =
-      String(this.#passwords).trim().length < 8;
+      String(this.#password).trim().length < 8;
 
     if (
       isNotExpectedPasswordValue ||

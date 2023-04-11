@@ -24,7 +24,7 @@ export default class Task {
     if (typeof this.#description !== "string")
       throw new Error("Invalid task description");
 
-    if (new Date(this.#completedAt) === "Invalid Date")
+    if (this.#completedAt !== null)
       throw new Error("Invalid task completed date");
 
     if (new Date(this.#createdAt) === "Invalid Date")
@@ -32,8 +32,6 @@ export default class Task {
 
     if (new Date(this.#updatedAt) === "Invalid Date")
       throw new Error("Invalid task updated date");
-
-    if (!Array.isArray(this.#tasks)) throw new Error("Invalid workspace tasks");
   }
 
   get() {

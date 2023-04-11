@@ -1,0 +1,4 @@
+validar email do usuário
+Criar uma maneira de retornar as mensagens de validação pro client
+Validar se o id existe para fazer o cadastro
+Arrumar RegEXP <= 4 caracteres

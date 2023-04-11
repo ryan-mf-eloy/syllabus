@@ -4,6 +4,7 @@ export default class CreateWorkSpaceRepository {
   }
 
   handle(workSpaceData) {
-    this.orm.create("workspace", workSpaceData);
+    const createdWorkSpace = this.orm.create("workspace", workSpaceData);
+    return createdWorkSpace;
   }
 }

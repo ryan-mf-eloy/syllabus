@@ -3,9 +3,9 @@ export default class UpdateUserRepository {
     this.orm = orm;
   }
 
-  handle(userData) {
-    const users = this.orm.update("user", userData.id, userData);
+  handle(userId, userData) {
+    const updatedUser = this.orm.update("user", userId, userData);
 
-    return users;
+    return updatedUser;
   }
 }

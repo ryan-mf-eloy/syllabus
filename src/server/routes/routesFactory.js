@@ -11,10 +11,10 @@ const routesFactory = (router) => {
     WorkSpaceController.get(request, response)
   );
   router.post("/work", (request, response) =>
-    WorkSpaceController.post(request, response)
+    WorkSpaceController.create(request, response)
   );
   router.put("/work/:id", (request, response) =>
-    WorkSpaceController.put(request, response)
+    WorkSpaceController.update(request, response)
   );
   router.delete("/work/:id", (request, response) =>
     WorkSpaceController.delete(request, response)
@@ -27,9 +27,9 @@ const routesFactory = (router) => {
   router.post("/task", (request, response) =>
     TaskController.create(request, response)
   );
-  router.post("/task/import", async (request, response) =>
-    TaskController.import(request, response)
-  );
+  router.post("/task/import", async function (request, response) {
+    return TaskController.import(request, response);
+  });
   // router.patch("/task/:id/complete", (request, response) =>
   //   TaskController.complete(request, response)
   // );

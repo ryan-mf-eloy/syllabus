@@ -16,6 +16,9 @@ export default class TransformStream extends Transform {
       transform(chunk, encoding, callback) {
         const legibleData = convertBufferToLegibleData(chunk);
         const jsonData = convertFromCSVToJson(legibleData);
+
+        console.table(legibleData);
+
         const jsonBuffer = Buffer.from(JSON.stringify(jsonData));
 
         callback(null, jsonBuffer);

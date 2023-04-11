@@ -4,6 +4,7 @@ export default class CreateTaskRepository {
   }
 
   handle(taskData) {
-    this.orm.create("task", taskData);
+    const createdTask = this.orm.create("task", taskData);
+    return createdTask;
   }
 }

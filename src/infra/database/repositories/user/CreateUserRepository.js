@@ -4,6 +4,7 @@ export default class CreateUserRepository {
   }
 
   handle(userData) {
-    this.orm.create("user", userData);
+    const createdUser = this.orm.create("user", userData);
+    return createdUser;
   }
 }
