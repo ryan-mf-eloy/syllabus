@@ -11,7 +11,13 @@ export default class User {
 
     if (typeof this.#username !== "string") throw new Error("Invalid username");
 
+    const emailIsEmpty = this.#email === null || !this.#email.trim();
+    const emailIsNotValid = !/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/.test(
+      this.#email
+    );
     if (typeof this.#email !== "string") throw new Error("Invalid user email");
+    if (emailIsEmpty) throw new Error("Fill user email");
+    if (emailIsNotValid) throw new Error("Invalid user email");
 
     const isNotExpectedPasswordValue = typeof this.#password !== "string";
     const isEmptyPassword = !String(this.#password).trim();

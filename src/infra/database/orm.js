@@ -60,6 +60,21 @@ class ORM {
 
   create(table, data) {
     if (Array.isArray(this.#database[table])) {
+      const keysWithId = Object.keys(data).filter((key) => key.endsWith("Id"));
+
+      const tablesToValidate = keysWithId.map((key) =>
+        key.replace("Id", "").toLowerCase()
+      );
+
+      tablesToValidate.forEach((linkedTable, index) => {
+        const existLinkedRegister = this.#database[linkedTable].find(
+          ({ id }) => id === data[keysWithId[index]]
+        );
+
+        if (!existLinkedRegister)
+          throw new Error(`This ${keysWithId[index]} not found`);
+      });
+
       this.#database[table].push(data);
     } else {
       this.#database[table] = [data];
