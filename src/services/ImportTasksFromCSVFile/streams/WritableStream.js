@@ -7,7 +7,7 @@ export default class WritableStream extends Writable {
     this.createTaskService = createTaskService;
   }
 
-  handle() {
+  handle(data) {
     // To don't lose "this" reference into the transform stream function
     const convertBufferToLegibleData = this.convertBufferToLegibleData.handle;
     const createTaskService = this.createTaskService;
@@ -17,7 +17,12 @@ export default class WritableStream extends Writable {
         const legibleData = convertBufferToLegibleData(chunk);
         const jsonData = JSON.parse(legibleData);
 
-        createTaskService.handle(jsonData[0]);
+        const taskWithWorkSpaceAndUserId = jsonData.map((taskData) => ({
+          ...taskData,
+          ...data,
+        }));
+
+        createTaskService.handle(taskWithWorkSpaceAndUserId[0]);
 
         callback(null);
       },

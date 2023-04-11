@@ -12,12 +12,10 @@ export default class TransformStream extends Transform {
     const convertBufferToLegibleData = this.convertBufferToLegibleData.handle;
     const convertFromCSVToJson = this.fileConvert.fromCSVToJson;
 
-    const TransformStream = Transform({
+    const transformStream = Transform({
       transform(chunk, encoding, callback) {
         const legibleData = convertBufferToLegibleData(chunk);
         const jsonData = convertFromCSVToJson(legibleData);
-
-        console.table(legibleData);
 
         const jsonBuffer = Buffer.from(JSON.stringify(jsonData));
 
@@ -25,6 +23,6 @@ export default class TransformStream extends Transform {
       },
     });
 
-    return TransformStream;
+    return transformStream;
   }
 }

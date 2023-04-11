@@ -3,6 +3,7 @@ import PipelineASync from "../../infra/shared/libs/PipelineAsync.js";
 import FileConvert from "../../infra/shared/libs/FileConvert.js";
 import UUID from "../../infra/shared/libs/UUID.js";
 
+import ReadableStream from "../../services/ImportTasksFromCSVFile/streams/ReadableStream.js";
 import WritableStream from "../../services/ImportTasksFromCSVFile/streams/WritableStream.js";
 import TransformStream from "../../services/ImportTasksFromCSVFile/streams/TransformStream.js";
 
@@ -20,8 +21,6 @@ import DeleteTaskRepository from "../../infra/database/repositories/task/DeleteT
 import UpdateTaskRepository from "../../infra/database/repositories/task/UpdateTaskRepository.js";
 
 import Task from "../../domain/entities/Task.js";
-
-import { createWriteStream } from "node:fs";
 
 class TaskController {
   constructor(
@@ -49,22 +48,17 @@ class TaskController {
     );
   }
 
-  async import(request, response) {
+  async import({ files, body }, response) {
     try {
-      const fileStream = request.files.tasks.filepath;
-      console.log(new URL(`${import.meta.url}/${fileStream.name}`));
-      // const filePath = "../" + import.meta.url + ;
+      await this.importTaskFromCSVFileService.handle({
+        file: files,
+        data: body,
+      });
 
-      const writeStream = createWriteStream(filePath);
-
-      // await this.importTaskFromCSVFileService.handle(
-      //   request.files.tasks._writeStream
-      // );
-
-      response.writeHead(200).end("Tasks imported successfully!");
+      return response.writeHead(200).end("Tasks imported successfully!");
     } catch (error) {
       console.log(error);
-      response
+      return response
         .writeHead(500)
         .end("Error at import your tasks. Verify your .csv file");
     }
@@ -117,6 +111,7 @@ class TaskController {
 export default new TaskController(
   new ImportTaskFromCSVFileService(
     new PipelineASync(),
+    new ReadableStream(),
     new TransformStream(new ConvertBufferToLegibleData(), new FileConvert()),
     new WritableStream(
       new ConvertBufferToLegibleData(),

@@ -1,8 +1,6 @@
-import formidable from "formidable";
-
 export default class Middleware {
   setHeaders(response) {
-    response.setHeader("Content-Type", "application/json");
+    response.setHeader("Content-Type", "application/json;");
   }
   async setStreamsWithResponseMiddleware(request, response) {
     const responseInBuffer = [];

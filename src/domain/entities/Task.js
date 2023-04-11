@@ -24,7 +24,7 @@ export default class Task {
     if (typeof this.#description !== "string")
       throw new Error("Invalid task description");
 
-    if (this.#completedAt !== null)
+    if (new Date(this.#createdAt) === "Invalid Date")
       throw new Error("Invalid task completed date");
 
     if (new Date(this.#createdAt) === "Invalid Date")

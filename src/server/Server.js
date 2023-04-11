@@ -5,8 +5,9 @@ import routesFactory from "./routes/routesFactory.js";
 
 import Middleware from "./http/Middleware.js";
 
-import formidable from "formidable";
+import multer from "multer";
 
+const upload = multer();
 class Server {
   constructor(middleware, router, routesFactory) {
     this.middleware = middleware;
@@ -28,20 +29,26 @@ class Server {
       const isUpload = contentType
         ? contentType.startsWith("multipart/form-data")
         : false;
+      const isImportRoute =
+        request.url === "/task/import" &&
+        request.method.toLowerCase() === "post";
 
-      if (isUpload) {
-        const formPromise = await new Promise((resolve, reject) => {
-          const form = formidable({ multiples: true });
+      if (isUpload && isImportRoute) {
+        upload.fields([
+          { name: "userId" },
+          { name: "workSpaceId" },
+          { name: "tasks", maxCount: 1 },
+        ])(request, response, (error) => {
+          if (error)
+            return response
+              .writeHead(400)
+              .end(
+                "Error uploading. Field name is not valid or multiple files selected."
+              );
 
-          form.parse(request, (error, fields, files) => {
-            if (error) return response.writeHead(400).end(`${error}`);
-
-            resolve({ fields, files });
-          });
+          request.files = request.files.tasks[0];
+          request.body = request.body;
         });
-
-        request.body = { ...formPromise.fields };
-        request.files = { ...formPromise.files };
       }
 
       // Middleware
