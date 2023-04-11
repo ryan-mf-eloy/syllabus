@@ -4,19 +4,21 @@ import UserController from "../controllers/UserController.js";
 
 const routesFactory = (router) => {
   // Default API
-  router.get("/", (request, response) => response.writeHead(200).end());
+  router.get("/", (request, response) =>
+    response.writeHead(200).end("NodeJS Fundamentals Challenge API")
+  );
 
   // WorkSpace
-  router.get("/work", (request, response) =>
+  router.get("/workspace", (request, response) =>
     WorkSpaceController.get(request, response)
   );
-  router.post("/work", (request, response) =>
+  router.post("/workspace", (request, response) =>
     WorkSpaceController.create(request, response)
   );
-  router.put("/work/:id", (request, response) =>
+  router.put("/workspace/:id", (request, response) =>
     WorkSpaceController.update(request, response)
   );
-  router.delete("/work/:id", (request, response) =>
+  router.delete("/workspace/:id", (request, response) =>
     WorkSpaceController.delete(request, response)
   );
 
@@ -30,9 +32,9 @@ const routesFactory = (router) => {
   router.post("/task/import", async function (request, response) {
     return TaskController.import(request, response);
   });
-  // router.patch("/task/:id/complete", (request, response) =>
-  //   TaskController.complete(request, response)
-  // );
+  router.patch("/task/:id/complete", (request, response) =>
+    TaskController.complete(request, response)
+  );
   router.put("/task/:id", (request, response) =>
     TaskController.update(request, response)
   );

@@ -130,7 +130,7 @@ class ORM {
 
       this.#database[table] = [...mainTableWithoutDeletedData];
     } else {
-      this.#database[table] = [];
+      throw new Error(`${table} table not exist`);
     }
 
     this.#persist();
@@ -145,11 +145,13 @@ class ORM {
         (data) => data.id === resourceID
       );
 
+      if (dataIndex === -1) throw new Error(`${table} not found`);
+
       const updatedData = { ...data, ...newData };
 
       this.#database[table][dataIndex] = { ...updatedData };
     } else {
-      this.#database[table] = [data];
+      throw new Error(`${table} table not exist`);
     }
 
     this.#persist();
@@ -157,6 +159,7 @@ class ORM {
     const updatedData = this.#database[table].find(
       (data) => data.id === resourceID
     );
+
     return updatedData;
   }
 }

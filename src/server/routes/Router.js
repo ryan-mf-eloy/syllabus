@@ -19,10 +19,10 @@ class Router {
       `^${urlWithRouteParam}(?<query>\\?(.*))?$`
     );
 
-    return routeParamRegExp.toString();
+    return routeParamRegExp;
   }
 
-  #sendNotFoundRouteResponse() {
+  #sendNotFoundResponse() {
     return this.#response.writeHead(404).end();
   }
 
@@ -32,7 +32,6 @@ class Router {
     const { groups } = requestedUrlByHttpClient.match(resource);
 
     this.#request.params = { ...groups };
-    delete this.#request.params.query;
 
     if (groups?.query) {
       const splittedQueryParams = groups.query.replace("?", "").split("&");
@@ -42,14 +41,14 @@ class Router {
         return (acc = { [mapParam[0]]: mapParam[1], ...acc });
       }, {});
 
-      this.#request.query = queryParams;
+      this.#request.params.query = queryParams;
     }
   }
 
   get(resource, handler) {
     this.#routes.set(
       JSON.stringify({
-        resource: this.#routeParamsInterpreter(resource),
+        resource: resource,
         method: "GET",
       }),
       { handler }
@@ -59,7 +58,7 @@ class Router {
   post(resource, handler) {
     this.#routes.set(
       JSON.stringify({
-        resource: this.#routeParamsInterpreter(resource),
+        resource: resource,
         method: "POST",
       }),
       { handler }
@@ -69,7 +68,7 @@ class Router {
   put(resource, handler) {
     this.#routes.set(
       JSON.stringify({
-        resource: this.#routeParamsInterpreter(resource),
+        resource: resource,
         method: "PUT",
       }),
       { handler }
@@ -79,7 +78,7 @@ class Router {
   patch(resource, handler) {
     this.#routes.set(
       JSON.stringify({
-        resource: this.#routeParamsInterpreter(resource),
+        resource: resource,
         method: "PATCH",
       }),
       { handler }
@@ -89,68 +88,57 @@ class Router {
   delete(resource, handler) {
     this.#routes.set(
       JSON.stringify({
-        resource: this.#routeParamsInterpreter(resource),
+        resource: resource,
         method: "DELETE",
       }),
       { handler }
     );
   }
 
-  #clearRegExp(routeData) {
-    return new RegExp(routeData.slice(1, 45));
-  }
-
-  #verifyIfRouteHasParameters(route) {
-    const routeData = JSON.parse(route[0]);
-
-    const formattedRouteResourceRegExp = new RegExp(
-      this.#clearRegExp(routeData.resource)
-    );
-
-    const isValidURLParams = formattedRouteResourceRegExp.test(
-      this.#request.url
-    );
-
-    const isSameHttpClientRequestMethod =
-      routeData.method === this.#request.method;
-
-    return isValidURLParams && isSameHttpClientRequestMethod;
-  }
-
   redirect() {
-    const routesArray = Array.from(this.#routes);
-    const foundRoute = routesArray.filter((route) =>
-      this.#verifyIfRouteHasParameters(route)
-    );
+    const routes = Array.from(this.#routes);
+    let notExistRoute = true;
 
-    const filteredRoute = foundRoute[0];
+    for (const route of routes) {
+      const routeData = JSON.parse(route[0]);
+      const routeCallback = route[1];
 
-    if (filteredRoute) {
-      const filteredRouteResource = this.#clearRegExp(
-        JSON.parse(filteredRoute[0]).resource
+      const requestedUrl = this.#request.url;
+      const requestedMethod = this.#request.method;
+
+      const routeWithParamsValidator = this.#routeParamsInterpreter(
+        routeData.resource
       );
-      this.#setURLParams(filteredRouteResource);
+      const urlHasParams = routeWithParamsValidator.test(requestedUrl);
+
+      const resource = requestedUrl.match(/\/(.*?)\//);
+      const resourceEndWithBar =
+        resource &&
+        routeData.resource !== "/" &&
+        requestedUrl.startsWith(routeData.resource);
+
+      const isSameMethodOfRoute = requestedMethod === routeData.method;
+      const isSameRouteOfRequest =
+        requestedUrl === routeData.resource || resourceEndWithBar;
+
+      if (urlHasParams) {
+        this.#setURLParams(routeWithParamsValidator);
+
+        if (isSameMethodOfRoute) {
+          notExistRoute = false;
+          routeCallback.handler(this.#request, this.#response);
+          break;
+        }
+      }
+
+      if (isSameMethodOfRoute && isSameRouteOfRequest) {
+        notExistRoute = false;
+        routeCallback.handler(this.#request, this.#response);
+        break;
+      }
     }
 
-    const urlWithParameters = !filteredRoute
-      ? undefined
-      : JSON.parse(filteredRoute[0])?.resource;
-
-    const urlWithoutParameters = this.#routeParamsInterpreter(
-      this.#request.url
-    );
-
-    const requestedRouteByHttpClient = this.#routes.get(
-      JSON.stringify({
-        resource: urlWithParameters || urlWithoutParameters,
-        method: this.#request.method,
-      })
-    );
-
-    if (requestedRouteByHttpClient)
-      return requestedRouteByHttpClient.handler(this.#request, this.#response);
-
-    return this.#sendNotFoundRouteResponse();
+    if (notExistRoute) return this.#sendNotFoundResponse();
   }
 }
 
