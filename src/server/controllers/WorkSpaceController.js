@@ -27,48 +27,64 @@ class WorkSpaceController {
     this.getWorkSpaceService = getWorkSpaceService;
   }
 
-  get(request, response) {
-    const workSpaces = this.getWorkSpaceService.handle();
+  async get(request, response) {
+    try {
+      const workSpaces = await this.getWorkSpaceService.handle();
 
-    return response.writeHead(200).end(
-      JSON.stringify({
-        workSpaces,
-        message: "WorkSpace listed successfully",
-      })
-    );
+      return response.writeHead(200).end(
+        JSON.stringify({
+          workSpaces,
+          message: "WorkSpace listed successfully",
+        })
+      );
+    } catch (error) {
+      console.error("Error to get workSpaces");
+    }
   }
 
-  create({ body }, response) {
-    const createdWorkSpace = this.createWorkSpaceService.handle(body);
+  async create({ body }, response) {
+    try {
+      const createdWorkSpace = await this.createWorkSpaceService.handle(body);
 
-    return response.writeHead(200).end(
-      JSON.stringify({
-        workSpace: createdWorkSpace,
-        message: "Created workSpace successfully",
-      })
-    );
+      return response.writeHead(200).end(
+        JSON.stringify({
+          workSpace: createdWorkSpace,
+          message: "Created workSpace successfully",
+        })
+      );
+    } catch (error) {
+      console.error("Error to create workSpace");
+    }
   }
 
-  update({ body, params }, response) {
-    const updatedWorkSpace = this.updateWorkSpaceService.handle(
-      params.id,
-      body
-    );
+  async update({ body, params }, response) {
+    try {
+      const updatedWorkSpace = await this.updateWorkSpaceService.handle(
+        params.id,
+        body
+      );
 
-    return response.writeHead(200).end(
-      JSON.stringify({
-        workSpace: updatedWorkSpace,
-        message: "Updated workSpace successfully",
-      })
-    );
+      return response.writeHead(200).end(
+        JSON.stringify({
+          workSpace: updatedWorkSpace,
+          message: "Updated workSpace successfully",
+        })
+      );
+    } catch (error) {
+      console.error("Error to update workSpace");
+    }
   }
 
-  delete({ params }, response) {
-    this.deleteWorkSpaceService.handle(params.id);
+  async delete({ params }, response) {
+    try {
+      await this.deleteWorkSpaceService.handle(params.id);
 
-    return response
-      .writeHead(200)
-      .end(JSON.stringify({ message: "Deleted workSpace successfully" }));
+      return response
+        .writeHead(200)
+        .end(JSON.stringify({ message: "Deleted workSpace successfully" }));
+    } catch (error) {
+      console.error("Error to delete workSpace");
+    }
   }
 }
 

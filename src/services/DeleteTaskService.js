@@ -3,7 +3,7 @@ export default class DeleteTaskService {
     this.deleteTaskRepository = deleteTaskRepository;
   }
 
-  handle(taskId) {
+  async handle(taskId) {
     return this.deleteTaskRepository.handle(taskId);
   }
 }

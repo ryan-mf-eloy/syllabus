@@ -3,7 +3,7 @@ export default class UpdateUserService {
     this.updateUserRepository = updateUserRepository;
   }
 
-  handle(userId, userData) {
+  async handle(userId, userData) {
     return this.updateUserRepository.handle(userId, userData);
   }
 }

@@ -5,12 +5,14 @@ import routesFactory from "./routes/routesFactory.js";
 
 import Middleware from "./http/Middleware.js";
 
-import multer from "multer";
+import AppError from "./app/errors/AppError.js";
 
+import multer from "multer";
 const upload = multer();
 class Server {
-  constructor(middleware, router, routesFactory) {
+  constructor(middleware, applicationErrorHandler, router, routesFactory) {
     this.middleware = middleware;
+    this.applicationErrorHandler = applicationErrorHandler;
     this.router = router;
     this.routesFactory = routesFactory;
 
@@ -40,11 +42,9 @@ class Server {
           { name: "tasks", maxCount: 1 },
         ])(request, response, (error) => {
           if (error)
-            return response
-              .writeHead(400)
-              .end(
-                "Error uploading. Field name is not valid or multiple files selected."
-              );
+            console.error(
+              `Error uploading. Field name is not valid or multiple files selected. Multer: ${error}`
+            );
 
           request.files = request.files.tasks[0];
           request.body = request.body;
@@ -60,9 +60,12 @@ class Server {
         );
       request.body = { ...request.body, ...readableResponse };
 
+      // Application Error Handler
+      this.applicationErrorHandler.setHttpResponseController(response);
+
       // Router
       this.router.setHttpInfo(request, response);
-      this.router.redirect();
+      await this.router.redirect();
     });
 
     this.routesFactory(this.router);
@@ -71,4 +74,4 @@ class Server {
   }
 }
 
-new Server(new Middleware(), Router, routesFactory);
+new Server(new Middleware(), AppError, Router, routesFactory);

@@ -3,7 +3,7 @@ export default class GetWorkSpaceService {
     this.getWorkSpaceRepository = getWorkSpaceRepository;
   }
 
-  handle() {
+  async handle() {
     return this.getWorkSpaceRepository.handle();
   }
 }

@@ -2,8 +2,9 @@ import ConvertBufferToLegibleData from "../shared/libs/ConvertBufferToLegibleDat
 
 import { Transform, Readable } from "node:stream";
 import { createReadStream, createWriteStream, existsSync } from "node:fs";
+import AppError from "../../server/app/errors/AppError.js";
 class ORM {
-  #database = {};
+  #database = { task: [], workspace: [], user: [] };
   #databasePath = new URL("db.json", import.meta.url);
 
   constructor() {
@@ -37,7 +38,7 @@ class ORM {
         createWriteStream(this.#databasePath);
       }
     } catch (error) {
-      console.log(`Database connection error: ${error}`);
+      throw AppError.handle(`Database connection error: ${error}`, 500);
     }
   }
 
@@ -67,17 +68,19 @@ class ORM {
       );
 
       tablesToValidate.forEach((linkedTable, index) => {
-        const existLinkedRegister = this.#database[linkedTable].find(
-          ({ id }) => id === data[keysWithId[index]]
-        );
+        if (this.#database[linkedTable]) {
+          const existLinkedRegister = this.#database[linkedTable].find(
+            ({ id }) => id === data[keysWithId[index]]
+          );
 
-        if (!existLinkedRegister)
-          throw new Error(`This ${keysWithId[index]} not found`);
+          if (!existLinkedRegister)
+            throw AppError.handle(`This ${keysWithId[index]} not found`, 400);
+        } else {
+          throw AppError.handle(`This ${keysWithId[index]} not found`, 400);
+        }
       });
 
       this.#database[table].push(data);
-    } else {
-      this.#database[table] = [data];
     }
 
     this.#persist();
@@ -130,7 +133,7 @@ class ORM {
 
       this.#database[table] = [...mainTableWithoutDeletedData];
     } else {
-      throw new Error(`${table} table not exist`);
+      throw AppError.handle(`${table} table not exist`, 400);
     }
 
     this.#persist();
@@ -145,13 +148,13 @@ class ORM {
         (data) => data.id === resourceID
       );
 
-      if (dataIndex === -1) throw new Error(`${table} not found`);
+      if (dataIndex === -1) throw AppError.handle(`${table} not found`, 400);
 
       const updatedData = { ...data, ...newData };
 
       this.#database[table][dataIndex] = { ...updatedData };
     } else {
-      throw new Error(`${table} table not exist`);
+      throw AppError.handle(`${table} table not exist`, 400);
     }
 
     this.#persist();

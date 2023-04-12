@@ -3,7 +3,7 @@ export default class UpdateTaskService {
     this.updateTaskRepository = updateTaskRepository;
   }
 
-  handle(taskId, taskData) {
+  async handle(taskId, taskData) {
     return this.updateTaskRepository.handle(taskId, taskData);
   }
 }

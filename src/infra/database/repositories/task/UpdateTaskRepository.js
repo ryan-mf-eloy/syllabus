@@ -3,8 +3,8 @@ export default class UpdateTaskRepository {
     this.orm = orm;
   }
 
-  handle(taskId, taskData) {
-    const updatedTask = this.orm.update("task", taskId, taskData);
+  async handle(taskId, taskData) {
+    const updatedTask = await this.orm.update("task", taskId, taskData);
 
     return updatedTask;
   }

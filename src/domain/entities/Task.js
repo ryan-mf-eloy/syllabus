@@ -1,3 +1,5 @@
+import AppError from "../../server/app/errors/AppError.js";
+
 export default class Task {
   #id = undefined;
   #userId = undefined;
@@ -11,27 +13,32 @@ export default class Task {
   constructor() {}
 
   #isValid() {
-    if (typeof this.#id !== "string") throw new Error("Invalid task id");
+    const isEmptyId = !String(this.#id).trim();
+    if (typeof this.#id !== "string" || isEmptyId)
+      throw AppError.handle("Invalid task id", 400);
 
-    if (typeof this.#userId !== "string")
-      throw new Error("Invalid task userId");
+    const isEmptyUserId = !String(this.#userId).trim();
+    if (typeof this.#userId !== "string" || isEmptyUserId)
+      throw AppError.handle("Invalid task userId", 400);
 
-    if (typeof this.#workSpaceId !== "string")
-      throw new Error("Invalid task workSpaceId");
+    const isEmptyWorkSpaceId = !String(this.#workSpaceId).trim();
+    if (typeof this.#workSpaceId !== "string" || isEmptyWorkSpaceId)
+      throw AppError.handle("Invalid task workSpaceId", 400);
 
-    if (typeof this.#title !== "string") throw new Error("Invalid task title");
+    if (typeof this.#title !== "string")
+      throw AppError.handle("Invalid task title", 400);
 
     if (typeof this.#description !== "string")
-      throw new Error("Invalid task description");
+      throw AppError.handle("Invalid task description", 400);
 
     if (new Date(this.#createdAt) === "Invalid Date")
-      throw new Error("Invalid task completed date");
+      throw AppError.handle("Invalid task completed date", 400);
 
     if (new Date(this.#createdAt) === "Invalid Date")
-      throw new Error("Invalid task created date");
+      throw AppError.handle("Invalid task created date", 400);
 
     if (new Date(this.#updatedAt) === "Invalid Date")
-      throw new Error("Invalid task updated date");
+      throw AppError.handle("Invalid task updated date", 400);
   }
 
   get() {
@@ -62,7 +69,7 @@ export default class Task {
     this.#id = id;
     this.#userId = userId;
     this.#workSpaceId = workSpaceId;
-    this.#title = title;
+    this.#title = String(title).trim() ? title : "Untitled";
     this.#description = description;
     this.#completedAt = completedAt;
     this.#createdAt = createdAt;

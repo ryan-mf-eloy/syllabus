@@ -3,8 +3,8 @@ export default class CreateTaskRepository {
     this.orm = orm;
   }
 
-  handle(taskData) {
-    const createdTask = this.orm.create("task", taskData);
+  async handle(taskData) {
+    const createdTask = await this.orm.create("task", taskData);
     return createdTask;
   }
 }

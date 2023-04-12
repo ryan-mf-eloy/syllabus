@@ -3,7 +3,7 @@ export default class GetUserService {
     this.getUserRepository = getUserRepository;
   }
 
-  handle() {
+  async handle() {
     return this.getUserRepository.handle();
   }
 }

@@ -3,7 +3,7 @@ export default class UpdateWorkSpaceService {
     this.updateWorkSpaceRepository = updateWorkSpaceRepository;
   }
 
-  handle(workSpaceId, workSpaceData) {
+  async handle(workSpaceId, workSpaceData) {
     return this.updateWorkSpaceRepository.handle(workSpaceId, workSpaceData);
   }
 }

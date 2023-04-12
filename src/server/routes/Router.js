@@ -95,11 +95,11 @@ class Router {
     );
   }
 
-  redirect() {
+  async redirect() {
     const routes = Array.from(this.#routes);
     let notExistRoute = true;
 
-    for (const route of routes) {
+    for await (const route of routes) {
       const routeData = JSON.parse(route[0]);
       const routeCallback = route[1];
 
@@ -111,29 +111,22 @@ class Router {
       );
       const urlHasParams = routeWithParamsValidator.test(requestedUrl);
 
-      const resource = requestedUrl.match(/\/(.*?)\//);
-      const resourceEndWithBar =
-        resource &&
-        routeData.resource !== "/" &&
-        requestedUrl.startsWith(routeData.resource);
-
       const isSameMethodOfRoute = requestedMethod === routeData.method;
-      const isSameRouteOfRequest =
-        requestedUrl === routeData.resource || resourceEndWithBar;
+      const isSameRouteOfRequest = requestedUrl === routeData.resource;
 
       if (urlHasParams) {
         this.#setURLParams(routeWithParamsValidator);
 
         if (isSameMethodOfRoute) {
           notExistRoute = false;
-          routeCallback.handler(this.#request, this.#response);
+          await routeCallback.handler(this.#request, this.#response);
           break;
         }
       }
 
       if (isSameMethodOfRoute && isSameRouteOfRequest) {
         notExistRoute = false;
-        routeCallback.handler(this.#request, this.#response);
+        await routeCallback.handler(this.#request, this.#response);
         break;
       }
     }

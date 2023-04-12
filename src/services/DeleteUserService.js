@@ -3,7 +3,7 @@ export default class DeleteUserService {
     this.deleteUserRepository = deleteUserRepository;
   }
 
-  handle(userId) {
+  async handle(userId) {
     return this.deleteUserRepository.handle(userId);
   }
 }

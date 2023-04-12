@@ -3,7 +3,7 @@ export default class GetTaskService {
     this.getTaskRepository = getTaskRepository;
   }
 
-  handle() {
+  async handle() {
     return this.getTaskRepository.handle();
   }
 }

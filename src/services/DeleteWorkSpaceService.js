@@ -3,7 +3,7 @@ export default class DeleteWorkSpaceService {
     this.deleteWorkSpaceRepository = deleteWorkSpaceRepository;
   }
 
-  handle(workSpaceId) {
+  async handle(workSpaceId) {
     return this.deleteWorkSpaceRepository.handle(workSpaceId);
   }
 }

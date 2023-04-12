@@ -27,45 +27,61 @@ class UserController {
     this.getUserService = getUserService;
   }
 
-  get(request, response) {
-    const users = this.getUserService.handle();
+  async get(request, response) {
+    try {
+      const users = await this.getUserService.handle();
 
-    return response.writeHead(200).end(
-      JSON.stringify({
-        users,
-        message: "Users listed successfully",
-      })
-    );
+      return response.writeHead(200).end(
+        JSON.stringify({
+          users,
+          message: "Users listed successfully",
+        })
+      );
+    } catch (error) {
+      console.error("Error to get users");
+    }
   }
 
-  create({ body }, response) {
-    const createdUser = this.createUserService.handle(body);
+  async create({ body }, response) {
+    try {
+      const createdUser = await this.createUserService.handle(body);
 
-    return response.writeHead(200).end(
-      JSON.stringify({
-        user: createdUser,
-        message: "Created user successfully",
-      })
-    );
+      return response.writeHead(200).end(
+        JSON.stringify({
+          user: createdUser,
+          message: "Created user successfully",
+        })
+      );
+    } catch (error) {
+      console.error("Error to create user");
+    }
   }
 
-  update({ body, params }, response) {
-    const updatedUser = this.updateUserService.handle(params.id, body);
+  async update({ body, params }, response) {
+    try {
+      const updatedUser = await this.updateUserService.handle(params.id, body);
 
-    return response.writeHead(200).end(
-      JSON.stringify({
-        user: updatedUser,
-        message: "Updated user successfully",
-      })
-    );
+      return response.writeHead(200).end(
+        JSON.stringify({
+          user: updatedUser,
+          message: "Updated user successfully",
+        })
+      );
+    } catch (error) {
+      console.error("Error to update user");
+    }
   }
 
-  delete({ params }, response) {
-    this.deleteUserService.handle(params.id);
+  async delete({ params }, response) {
+    try {
+      await this.deleteUserService.handle(params.id);
 
-    return response
-      .writeHead(200)
-      .end(JSON.stringify({ message: "Deleted user successfully" }));
+      return response
+        .writeHead(200)
+        .end(JSON.stringify({ message: "Deleted user successfully" }));
+    } catch (error) {
+      console.error("Error to delete user");
+    }
   }
 }
 

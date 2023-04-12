@@ -5,13 +5,13 @@ export default class CreateWorkSpaceService {
     this.createWorkSpaceRepository = createWorkSpaceRepository;
   }
 
-  handle(workSpaceData) {
+  async handle(workSpaceData) {
     this.workSpaceEntity.set({
       ...workSpaceData,
       id: this.UUID.gen(),
     });
 
-    const createdWorkSpace = this.createWorkSpaceRepository.handle(
+    const createdWorkSpace = await this.createWorkSpaceRepository.handle(
       this.workSpaceEntity.get()
     );
 

@@ -1,3 +1,5 @@
+import AppError from "../../server/app/errors/AppError.js";
+
 export default class User {
   #id = undefined;
   #username = undefined;
@@ -7,17 +9,22 @@ export default class User {
   constructor() {}
 
   #isValid() {
-    if (typeof this.#id !== "string") throw new Error("Invalid user id");
+    if (typeof this.#id !== "string")
+      throw AppError.handle("Invalid user id", 400);
 
-    if (typeof this.#username !== "string") throw new Error("Invalid username");
+    if (typeof this.#username !== "string")
+      throw AppError.handle("Invalid username", 400);
 
     const emailIsEmpty = this.#email === null || !this.#email.trim();
     const emailIsNotValid = !/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/.test(
       this.#email
     );
-    if (typeof this.#email !== "string") throw new Error("Invalid user email");
-    if (emailIsEmpty) throw new Error("Fill user email");
-    if (emailIsNotValid) throw new Error("Invalid user email");
+
+    if (typeof this.#email !== "string")
+      throw AppError.handle("Invalid user email", 400);
+
+    if (emailIsEmpty) throw AppError.handle("Fill user email", 400);
+    if (emailIsNotValid) throw AppError.handle("Invalid user email", 400);
 
     const isNotExpectedPasswordValue = typeof this.#password !== "string";
     const isEmptyPassword = !String(this.#password).trim();
@@ -29,7 +36,7 @@ export default class User {
       isEmptyPassword ||
       passwordHasLessThanEightCharacters
     )
-      throw new Error("Invalid user password");
+      throw AppError.handle("Invalid user password", 400);
   }
 
   get() {

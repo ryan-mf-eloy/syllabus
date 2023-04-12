@@ -5,13 +5,15 @@ export default class CreateUserService {
     this.createUserRepository = createUserRepository;
   }
 
-  handle(userData) {
+  async handle(userData) {
     this.userEntity.set({
       ...userData,
       id: this.UUID.gen(),
     });
 
-    const createdUser = this.createUserRepository.handle(this.userEntity.get());
+    const createdUser = await this.createUserRepository.handle(
+      this.userEntity.get()
+    );
 
     return createdUser;
   }

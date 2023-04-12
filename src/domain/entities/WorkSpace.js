@@ -1,3 +1,5 @@
+import AppError from "../../server/app/errors/AppError.js";
+
 export default class WorkSpace {
   #id = undefined;
   #userId = undefined;
@@ -7,16 +9,19 @@ export default class WorkSpace {
   constructor() {}
 
   #isValid() {
-    if (typeof this.#id !== "string") throw new Error("Invalid workspace id");
+    const isEmptyId = !String(this.#id).trim();
+    if (typeof this.#id !== "string" || isEmptyId)
+      throw AppError.handle("Invalid workspace id", 400);
 
-    if (typeof this.#userId !== "string")
-      throw new Error("Invalid workspace userId");
+    const isEmptyUserId = !String(this.#userId).trim();
+    if (typeof this.#userId !== "string" || isEmptyUserId)
+      throw AppError.handle("Invalid workspace userId", 400);
 
     if (typeof this.#title !== "string")
-      throw new Error("Invalid workspace title");
+      throw AppError.handle("Invalid workspace title", 400);
 
     if (typeof this.#description !== "string")
-      throw new Error("Invalid workspace description");
+      throw AppError.handle("Invalid workspace description", 400);
   }
 
   get() {
@@ -33,7 +38,7 @@ export default class WorkSpace {
   set({ id, userId, title, description }) {
     this.#id = id;
     this.#userId = userId;
-    this.#title = title;
+    this.#title = String(title).trim() ? title : "Untitled";
     this.#description = description;
 
     this.#isValid();

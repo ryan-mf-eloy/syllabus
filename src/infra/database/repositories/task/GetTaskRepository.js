@@ -3,8 +3,8 @@ export default class GetTaskRepository {
     this.orm = orm;
   }
 
-  handle() {
-    const tasks = this.orm.get("task");
+  async handle() {
+    const tasks = await this.orm.get("task");
 
     return tasks;
   }

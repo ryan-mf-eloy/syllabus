@@ -3,7 +3,7 @@ import TaskController from "../controllers/TaskController.js";
 import UserController from "../controllers/UserController.js";
 
 const routesFactory = (router) => {
-  // Default API
+  // Default
   router.get("/", (request, response) =>
     response.writeHead(200).end("NodeJS Fundamentals Challenge API")
   );
@@ -29,9 +29,9 @@ const routesFactory = (router) => {
   router.post("/task", (request, response) =>
     TaskController.create(request, response)
   );
-  router.post("/task/import", async function (request, response) {
-    return TaskController.import(request, response);
-  });
+  router.post("/task/import", (request, response) =>
+    TaskController.import(request, response)
+  );
   router.patch("/task/:id/complete", (request, response) =>
     TaskController.complete(request, response)
   );
