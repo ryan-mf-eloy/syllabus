@@ -4,6 +4,9 @@ export default class UpdateTaskService {
   }
 
   async handle(taskId, taskData) {
-    return this.updateTaskRepository.handle(taskId, taskData);
+    return this.updateTaskRepository.handle(taskId, {
+      ...taskData,
+      updatedAt: new Date(),
+    });
   }
 }
