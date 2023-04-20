@@ -1,3 +1,3 @@
-import { config } from './src/infra/database/queryBuilder/database'
+import { config } from './src/shared/infra/database/knexConfig'
 
 export default config

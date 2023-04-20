@@ -1,16 +1,4 @@
-import { env } from './environments/envManager'
-import { application } from './application'
+import app from './app'
 
-/**
- * Run the server!
- */
-const initServer = async () => {
-  try {
-    await application.listen({ port: env.PORT })
-  } catch (err) {
-    application.log.error(err)
-    process.exit(1)
-  }
-}
-
-initServer()
+// Running server
+app.listen({ port: 3000 })

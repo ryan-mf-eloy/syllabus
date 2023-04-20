@@ -1,12 +1,6 @@
-# Databases
-/src/infra/database/*.db
+node_modules
 
-# Packege
-/node_modules
+build
 
-# Build
-/build
-
-# Environments
 .env
 .env.test
